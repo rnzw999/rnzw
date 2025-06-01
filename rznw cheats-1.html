@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+    <title>Block Craft 3D</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="images/tela.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="green">
+    <meta name="theme-color" content="#00000FF">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        body {
+            background: url('images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.0);
+            border-radius: 10px;
+            z-index: 10001;
+        }
+        .header, .footer {
+            background-color: Indigo;
+            padding: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+        .footer {
+            border-radius: 0 0 10px 10px;
+            margin-top: 0;
+        }
+        .section {
+            background-color: gray;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid white;
+        }
+        .section.active {
+            background-color: black;
+        }
+        .aim-radius {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            background-color: gray;
+            cursor: pointer;
+            border-bottom: 1px solid white;
+        }
+        .aim-radius.active {
+            background-color: black;
+        }
+        .aim-radius-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .aim-radius span {
+            text-align: center;
+        }
+        .aim-radius button {
+            background-color: Indigo;
+            border: none;
+            color: Indigo;
+            font-size: 18px;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 50%;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .device-info {
+            background-color: black;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .open-freefire {
+            background-color: black;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #ios-message {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10002;
+        }
+        #ios-message .message {
+            background-color: black;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .toggle-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            cursor: pointer;
+            z-index: 10000;
+        }
+        .activated {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10003;
+        }
+        .activated .message {
+            background-color: black;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .activated button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .open-block-craft {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: url('images/button.jpg') no-repeat center center;
+            background-size: contain;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Existing HTML Elements -->
+    <div class="container">
+        <div class="device-info" id="device-info">STATUS: ONLINE</div>
+        <div class="header">@rnzw cheats external</div>
+        <div class="section" id="aimbot-20%">Aim Assist</div>
+        <div class="aim-radius" id="aim-radius">
+            <span id="radius-label">Aim Fov <span id="radius-value">0.00</span></span>
+            <div class="aim-radius-controls">
+                <button id="minus">-</button>
+                <input type="range" min="0" max="20" value="0" class="slider" id="radius-slider">
+                <button id="plus">+</button>
+            </div>
+        </div>
+        <div class="section" id="aim-lock-20%">Aimlock</div>
+        <div class="section" id="no-recoil-20%">Fix Sensibility</div>
+        <div class="section" id="creators">Creators</div>
+        <div class="footer"></div>
+        <div class="open-freefire" id="open-freefire">Abrir Free Fire</div>
+    </div>
+
+    <div class="activated" id="activated">
+        <div class="message">
+            <p id="activated-message"></p>
+            <button id="activated-ok-button">OK</button>
+        </div>
+    </div>
+
+    <div class="toggle-menu" id="toggle-menu"></div>
+
+    <button class="open-block-craft" id="open-block-craft"></button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const toggleMenu = document.getElementById('toggle-menu');
+            const sections = document.querySelectorAll('.section');
+            const aimRadius = document.getElementById('aim-radius');
+            const radiusValue = document.getElementById('radius-value');
+            const radiusSlider = document.getElementById('radius-slider');
+            const activated = document.getElementById('activated');
+            const activatedMessage = document.getElementById('activated-message');
+            const activatedOkButton = document.getElementById('activated-ok-button');
+            const openFreeFire = document.getElementById('open-freefire');
+            const openBlockCraft = document.getElementById('open-block-craft');
+            const deviceInfoElem = document.getElementById('device-info');
+
+            let radius = parseFloat(radiusSlider.value);
+
+            toggleMenu.addEventListener('click', function() {
+                container.style.display = (container.style.display === 'none' || container.style.display === '') ? 'block' : 'none';
+            });
+
+            function isiOS() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            }
+
+            function checkiOSVersion() {
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                const iOSVersion = /OS (\d+)[._](\d+)?[._]?(\d+)?/.exec(userAgent);
+                if (iOSVersion) {
+                    const version = `${iOSVersion[1]}.${iOSVersion[2] || 0}.${iOSVersion[3] || 0}`;
+                    const versionNum = parseFloat(version);
+                    return versionNum >= 25.0;
+                }
+                return false;
+            }
+
+            function showiOSMessage() {
+                if (checkiOSVersion()) {
+                    deviceInfoElem.innerText = `iOS ${navigator.appVersion}`;
+                } else {
+                    deviceInfoElem.innerText = 'STATUS: ONLINE';
+                }
+            }
+
+            showiOSMessage();
+
+            sections.forEach(section => {
+                section.addEventListener('click', function() {
+                    if (this.id === 'creators') {
+                        window.location.href = 'https://discord.gg/YbY4akyQnt';
+                    } else {
+                        const isActive = this.classList.toggle('active');
+                        activatedMessage.textContent = isActive ? `${this.textContent.trim()} ativado` : `${this.textContent.trim()} desativado`;
+                        activated.style.display = 'flex';
+                    }
+                });
+            });
+
+            document.getElementById('minus').addEventListener('click', function() {
+                radius = Math.max(0, radius - 0.5);
+                radiusSlider.value = radius;
+                radiusValue.textContent = radius.toFixed(2);
+            });
+
+            document.getElementById('plus').addEventListener('click', function() {
+                radius = Math.min(20, radius + 0.5);
+                radiusSlider.value = radius;
+                radiusValue.textContent = radius.toFixed(2);
+            });
+
+            radiusSlider.addEventListener('input', function() {
+                radius = parseFloat(this.value);
+                radiusValue.textContent = radius.toFixed(2);
+            });
+
+            openFreeFire.addEventListener('click', function() {
+                window.location.href = 'freefireth://';
+            });
+
+            openBlockCraft.addEventListener('click', function() {
+                window.location.href = 'https://youtu.be/8lR-yuSsU58?si=9v_3n5O9UugWmMu9';
+            });
+
+            activatedOkButton.addEventListener('click', function() {
+                activated.style.display = 'none';
+            });
+        });
+    </script>
+
+
+</body></html>
